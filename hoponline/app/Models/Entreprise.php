@@ -12,8 +12,8 @@ class Entreprise extends Model
     protected $table = 'entreprise';
     protected $guarded = [];
 
-    public function contacts()
+    /*public function contacts()
     {
         return $this->belongsToMany(Contact::class);
-    }
+    }*/
 }

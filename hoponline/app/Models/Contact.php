@@ -12,8 +12,10 @@ class Contact extends Model
     protected $table = 'contact';
     protected $guarded = [];
 
-    public function entreprises()
+    /*public function entreprise()
     {
         return $this->hasOne(Entreprise::class);
-    }
+    }*/
+
+    
 }
