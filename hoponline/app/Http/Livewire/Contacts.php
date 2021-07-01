@@ -29,6 +29,7 @@ class Contacts extends Component
 
     public $confirmingContactDeletion = false;
     public $confirmingContactAdd = false;
+    public $confirmingContactView = false;
 
     protected $rules = [
         'contact.nom' => 'required|string|alpha',
@@ -80,10 +81,17 @@ class Contacts extends Component
         $this->confirmingContactAdd = true;
     }
 
+    public function confirmContactView(Entreprise $entreprise){
+        //$contact->delete();
+        $this->entreprise = $entreprise;
+        $this->confirmingContactView = true;
+    }
     
     public function confirmContactEdit(Contact $contact, Entreprise $entreprise){        
-        $this->contact = $contact;
-        $this->entreprise = $entreprise;
+        if($contact){
+        $this->contact = $contact;}
+        if($entreprise){
+        $this->entreprise = $entreprise;}
         $this->confirmingContactAdd = true;
     }
 

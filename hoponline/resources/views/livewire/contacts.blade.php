@@ -78,12 +78,20 @@
                                 <td class="py-3 px-6 text-center">
                                     <div class="flex item-center justify-end">
                                         <div class="w-4 mr-2 transform text-gray-500 hover:text-black hover:scale-110">
+                                           
+
+                                            <span wire:click="confirmContactView({{$contact->id}})" wire:loading.attr="disabled">
+
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                             </svg>
+
+                                            </span>
+
+
                                         </div>
-                                        <div class="w-4 mr-2 transform text-gray-500 hover:text-black hover:scale-110">
+                                        <div class="w-4 mr-2 transform text-gray-500 hover:text-black hover:scale-110 cursor-pointer">
 
 
                                         <span wire:click="confirmContactEdit({{$contact->id}})" wire:loading.attr="disabled">
@@ -121,6 +129,45 @@
                 <div class="mt-4">{{ $contacts->links('pagination::tailwind') }}</div>
 
                 <x-jet-dialog-modal wire:model="confirmingContactDeletion">
+            <x-slot name="title">
+              
+            </x-slot>
+
+            <x-slot name="content">
+            <div class="sm:flex sm:items-start">
+                <div class="flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                  <svg class="h-6 w-6 text-red-600" x-description="Heroicon name: outline/exclamation" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                 </svg>
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  <h3 class="text-lg font-bold leading-6 font-medium text-gray-900" id="modal-title">
+                    Supprimer le contact
+                  </h3>
+                  <div class="my-10">
+                    <p class="">
+                    Etes-vous sûr de vouloir supprimer le contact ?
+                    <p/>
+                    Cette opération est irreversible. 
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </x-slot>
+
+            <x-slot name="footer">
+                <x-jet-secondary-button class="normal-case" wire:click="$set('confirmingContactDeletion',false)" wire:loading.attr="disabled">
+                    {{ __('Annuler') }}
+                </x-jet-secondary-button>
+
+                <x-jet-danger-button class="ml-2 bg-red-500 normal-case" wire:click="deleteContact({{$confirmingContactDeletion}})" wire:loading.attr="disabled">
+                    {{ __('Confirmer') }}
+                </x-jet-danger-button>
+            </x-slot>
+        </x-jet-dialog-modal>
+
+
+        <x-jet-dialog-modal wire:model="confirmingContactDeletion">
             <x-slot name="title">
               
             </x-slot>
@@ -244,6 +291,94 @@
 
             <x-slot name="footer">
                 <x-jet-secondary-button class="normal-case" wire:click="$set('confirmingContactAdd',false)" wire:loading.attr="disabled">
+                    {{ __('Annuler') }}
+                </x-jet-secondary-button>
+
+                <x-jet-danger-button class="float-right bg-cstm hover:bg-gray-400 normal-case ml-2 text-white font-bold py-2 px-4 rounded-md inline-flex items-center border border-green-900" wire:click="saveContact()" wire:loading.attr="disabled">
+                    {{ __('Valider') }}
+                </x-jet-danger-button>
+            </x-slot>
+        </x-jet-dialog-modal>
+
+
+
+
+
+        <x-jet-dialog-modal wire:model="confirmingContactView">
+            <x-slot name="title">
+            <h3 class="text-lg font-bold leading-6 font-medium text-gray-900" id="modal-title">
+                    Détail du contact
+                  </h3>
+            </x-slot>
+
+            <x-slot name="content">
+             
+            <div class="flex mt-6">
+        <div class="flex-1 text-left  mr-2"><div class="col-span-6 sm:col-span-4">
+            <x-jet-label class="font-bold" for="prenom" value="{{ __('Prénom') }}" />
+            <x-jet-input disabled id="prenom" type="text" class="mt-1 block w-full" wire:model.defer="contact.prenom"   />
+            <x-jet-input-error for="contact.prenom" class="mt-2" />
+        </div></div>
+
+
+        <div class="flex-1 text-left  ml-2"><div class="col-span-6 sm:col-span-4">
+            <x-jet-label class="font-bold" for="nom" value="{{ __('Nom') }}" />
+            <x-jet-input disabled id="nom" type="text" class="mt-1 block w-full" wire:model.defer="contact.nom"   />
+            <x-jet-input-error for="contact.nom" class="mt-2" />
+        </div></div>
+
+
+            </div>
+            <div class="flex-1 text-left mt-4"><div class="col-span-6 sm:col-span-4">
+            <x-jet-label class="font-bold" for="e-mail" value="{{ __('E-mail') }}" />
+            <x-jet-input disabled id="e-mail" type="text" class="mt-1 block w-full" wire:model.defer="contact.e_mail"  />
+            <x-jet-input-error for="contact.e_mail" class="mt-2" />
+        </div></div>
+
+
+        <div class="flex-1 text-left mt-4"><div class="col-span-6 sm:col-span-4">
+            <x-jet-label class="font-bold" for="entreprise" value="{{ __('Entreprise') }}" />
+            <x-jet-input disabled id="entreprise" type="text" class="mt-1 block w-full" wire:model.defer="entreprise.nom"  />
+            <x-jet-input-error for="entreprise.nom" class="mt-2" />
+        </div></div>
+
+
+        <div class="flex-1 text-left mt-4"><div class="col-span-6 sm:col-span-4">
+            <x-jet-label class="font-bold" for="adresse" value="{{ __('Adresse') }}" />
+            <textarea disabled class="mt-1 block w-full resize border border-gray-300 rounded-md" wire:model.defer="entreprise.adresse"
+            rows="3" cols="33">
+            It was a dark and stormy night...
+            </textarea>            
+            <x-jet-input-error for="entreprise.adresse" class="mt-2" />
+        </div></div>
+
+
+        <div class="flex mt-6">
+        <div class="flex-shrink text-left  mr-2"><div class="col-span-6 sm:col-span-4">
+            <x-jet-label class="font-bold" for="code_postal" value="{{ __('Code postal') }}" />
+            <x-jet-input disabled id="code_postal" type="text" class="mt-1 block w-full" wire:model.defer="entreprise.code_postal"   />
+            <x-jet-input-error for="entreprise.code_postal" class="mt-2" />
+        </div></div>
+
+
+        <div class="flex-1 text-left  ml-2"><div class="col-span-6 sm:col-span-4">
+            <x-jet-label class="font-bold" for="ville" value="{{ __('Ville') }}" />
+            <x-jet-input disabled  id="ville" type="text" class="mt-1 block w-full" wire:model.defer="entreprise.ville"   />
+            <x-jet-input-error for="entreprise.ville" class="mt-2" />
+        </div></div>
+
+
+            </div>
+ 
+
+            <label id="assigned-to-label" class="block text-sm leading-5 font-bold text-gray-700 mt-4">Statut</label>
+            <x-jet-input disabled  id="statut" type="text" class="mt-1 block" wire:model.defer="entreprise.statut"/>
+    
+  
+            </x-slot>
+
+            <x-slot name="footer">
+                <x-jet-secondary-button class="normal-case" wire:click="$set('confirmingContactView',false)" wire:loading.attr="disabled">
                     {{ __('Annuler') }}
                 </x-jet-secondary-button>
 
